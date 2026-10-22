@@ -1,0 +1,148 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>SketchSpark 🎨 – Drawing Challenges</title>
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body>
+
+  <!-- Floating background bubbles -->
+  <div class="bubbles" aria-hidden="true">
+    <span></span><span></span><span></span><span></span>
+    <span></span><span></span><span></span><span></span>
+    <span></span><span></span><span></span><span></span>
+  </div>
+
+  <!-- ===== HEADER ===== -->
+  <header class="site-header">
+    <div class="logo">
+      <span class="logo-icon">✏️</span>
+      <span class="logo-text">Sketch<span class="accent">Spark</span></span>
+    </div>
+    <nav class="nav-pills">
+      <button class="pill active" data-section="challenge">🎯 Challenges</button>
+      <button class="pill" data-section="canvas">🖌️ Draw</button>
+      <button class="pill" data-section="gallery">🖼️ Gallery</button>
+    </nav>
+  </header>
+
+  <main>
+
+    <!-- ===== HERO ===== -->
+    <section class="hero">
+      <h1 class="hero-title">Ignite Your <span class="gradient-text">Creativity</span></h1>
+      <p class="hero-sub">Pick a challenge, grab your brush, and let your imagination run wild.</p>
+      <button class="btn-primary" id="startBtn">Start Drawing ✨</button>
+    </section>
+
+    <!-- ===== CHALLENGES SECTION ===== -->
+    <section id="section-challenge" class="section challenges-section">
+      <h2 class="section-title">🎯 Today's Challenges</h2>
+      <p class="section-desc">Pick a challenge card — each one unlocks a drawing prompt and a timer!</p>
+
+      <div class="challenge-grid" id="challengeGrid">
+        <!-- Cards injected by JS -->
+      </div>
+
+      <!-- Daily streak -->
+      <div class="streak-bar">
+        <span class="streak-label">🔥 Your Streak:</span>
+        <div class="streak-dots" id="streakDots"></div>
+        <span class="streak-count" id="streakCount">0 days</span>
+      </div>
+    </section>
+
+    <!-- ===== CANVAS SECTION ===== -->
+    <section id="section-canvas" class="section canvas-section hidden">
+      <div class="canvas-header">
+        <div class="prompt-badge" id="activePrompt">🎨 Choose a challenge first!</div>
+        <div class="timer-badge" id="timerDisplay">⏱ 03:00</div>
+      </div>
+
+      <div class="canvas-wrapper">
+        <canvas id="drawCanvas" width="900" height="500" aria-label="Drawing canvas"></canvas>
+      </div>
+
+      <!-- Toolbar -->
+      <div class="toolbar" role="toolbar" aria-label="Drawing tools">
+
+        <div class="tool-group">
+          <label class="tool-label">Tool</label>
+          <div class="tool-btns">
+            <button class="tool-btn active" id="toolPen" title="Pen" aria-pressed="true">🖊️</button>
+            <button class="tool-btn" id="toolBrush" title="Brush" aria-pressed="false">🖌️</button>
+            <button class="tool-btn" id="toolEraser" title="Eraser" aria-pressed="false">🧹</button>
+          </div>
+        </div>
+
+        <div class="tool-group">
+          <label class="tool-label">Color</label>
+          <div class="color-swatches" id="swatches"></div>
+          <input type="color" id="colorPicker" value="#6c63ff" title="Custom color" aria-label="Custom color picker" />
+        </div>
+
+        <div class="tool-group">
+          <label class="tool-label">Size <span id="sizeVal">5</span>px</label>
+          <input type="range" id="sizeSlider" min="1" max="40" value="5" aria-label="Brush size" />
+        </div>
+
+        <div class="tool-group tool-actions">
+          <button class="action-btn" id="undoBtn" title="Undo (Ctrl+Z)">↩ Undo</button>
+          <button class="action-btn" id="clearBtn" title="Clear canvas">🗑️ Clear</button>
+          <button class="action-btn save-btn" id="saveBtn" title="Save drawing">💾 Save</button>
+        </div>
+
+      </div>
+
+      <!-- Timer controls -->
+      <div class="timer-controls">
+        <button class="timer-btn" id="timerStartBtn">▶ Start Timer</button>
+        <button class="timer-btn" id="timerResetBtn">↺ Reset</button>
+        <select id="timerDuration" aria-label="Select timer duration">
+          <option value="180">3 min</option>
+          <option value="300">5 min</option>
+          <option value="600">10 min</option>
+          <option value="0">Free draw</option>
+        </select>
+      </div>
+    </section>
+
+    <!-- ===== GALLERY SECTION ===== -->
+    <section id="section-gallery" class="section gallery-section hidden">
+      <h2 class="section-title">🖼️ Your Gallery</h2>
+      <p class="section-desc">Your saved masterpieces live here. Keep drawing to fill it up!</p>
+      <div class="gallery-grid" id="galleryGrid">
+        <div class="gallery-empty" id="galleryEmpty">
+          <span>🎨</span>
+          <p>No drawings saved yet. Finish a challenge and hit <strong>Save</strong>!</p>
+        </div>
+      </div>
+    </section>
+
+  </main>
+
+  <!-- ===== TOAST ===== -->
+  <div class="toast" id="toast" role="status" aria-live="polite"></div>
+
+  <!-- ===== CHALLENGE MODAL ===== -->
+  <div class="modal-overlay hidden" id="challengeModal" role="dialog" aria-modal="true" aria-labelledby="modalTitle">
+    <div class="modal-card">
+      <div class="modal-emoji" id="modalEmoji">🎨</div>
+      <h3 id="modalTitle">Challenge Name</h3>
+      <p id="modalDesc">Challenge description goes here.</p>
+      <div class="modal-meta">
+        <span class="badge" id="modalDiff"></span>
+        <span class="badge badge-time" id="modalTime"></span>
+      </div>
+      <div class="modal-actions">
+        <button class="btn-primary" id="modalAccept">🚀 Accept Challenge</button>
+        <button class="btn-ghost" id="modalClose">Maybe later</button>
+      </div>
+    </div>
+  </div>
+
+  <script src="app.js"></script>
+</body>
+</html>
